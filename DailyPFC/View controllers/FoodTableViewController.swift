@@ -50,34 +50,16 @@ class FoodTableViewController: UITableViewController {
         if editingStyle == .delete {
             foodList.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    
+    @IBAction func unwindToFoodList(segue: UIStoryboardSegue) {
+        guard segue.identifier == "saveFood" else { return }
+        let sourceViewController = segue.source as! FoodDetailViewController
+        if let food = sourceViewController.food {
+            let newIndexPath = IndexPath(row: foodList.count, section: 0)
+            foodList.append(food)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        }
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
