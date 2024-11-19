@@ -14,15 +14,12 @@ class FoodDetailViewController: UITableViewController {
     @IBOutlet weak var proteinField: UITextField!
     @IBOutlet weak var fatField: UITextField!
     @IBOutlet weak var carbohydrateField: UITextField!
+    @IBOutlet weak var nutrientsPerControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let food {
-            navigationItem.title = "Edit"
-        } else {
-            navigationItem.title = "New"
-        }
+        updateNavigationItem()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -34,10 +31,21 @@ class FoodDetailViewController: UITableViewController {
         let fat = Double(fatField.text!) ?? 0.0
         let carbohydrate = Double(carbohydrateField.text!) ?? 0.0
         
+        let selectedSegmentTitle = nutrientsPerControl.titleForSegment(at: nutrientsPerControl.selectedSegmentIndex) ?? "100g"
+        let nutrientsPer = NutrientsPer(rawValue: selectedSegmentTitle) ?? .oneHundredGrams
+        
         if food != nil {
             return
         } else {
-            food = Food(name: name, protein: protein, fat: fat, carbohydrate: carbohydrate, nutrientsPer: .serving)
+            food = Food(name: name, protein: protein, fat: fat, carbohydrate: carbohydrate, nutrientsPer: nutrientsPer)
+        }
+    }
+    
+    func updateNavigationItem() {
+        if let food {
+            navigationItem.title = "Edit"
+        } else {
+            navigationItem.title = "New"
         }
     }
 }
