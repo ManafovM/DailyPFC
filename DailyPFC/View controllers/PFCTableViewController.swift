@@ -8,10 +8,6 @@
 import UIKit
 
 class PFCTableViewController: UITableViewController {
-    var dailyPfc = DailyPFC(pfcItems:[
-        PFCItem(food: Food(name: "Rice", protein: 2.5, fat: 0.3, carbohydrate: 37.1, nutrientsPer: .oneHundredGrams), amount: 180)
-    ], maxKcal: 2209)
-    
     @IBOutlet weak var proteinTotalLabel: UILabel!
     @IBOutlet weak var fatTotalLabel: UILabel!
     @IBOutlet weak var carbohydrateTotalLabel: UILabel!
@@ -20,13 +16,14 @@ class PFCTableViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = editButtonItem
+        DailyPFC.loadDailyPFC()
         updateTotalLabels()
     }
     
     func updateTotalLabels() {
-        proteinTotalLabel.text = String(format: "%.1f", dailyPfc.proteinTotal)
-        fatTotalLabel.text = String(format: "%.1f", dailyPfc.fatTotal)
-        carbohydrateTotalLabel.text = String(format: "%.1f", dailyPfc.carbohydrateTotal)
+        proteinTotalLabel.text = String(format: "%.1f", DailyPFC.shared.proteinTotal)
+        fatTotalLabel.text = String(format: "%.1f", DailyPFC.shared.fatTotal)
+        carbohydrateTotalLabel.text = String(format: "%.1f", DailyPFC.shared.carbohydrateTotal)
     }
 
     // MARK: - Table view data source
@@ -36,13 +33,13 @@ class PFCTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dailyPfc.pfcItems.count
+        return DailyPFC.shared.pfcItems.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PFCItemCell", for: indexPath)
         
-        let pfcItem = dailyPfc.pfcItems[indexPath.row]
+        let pfcItem = DailyPFC.shared.pfcItems[indexPath.row]
         var content = cell.defaultContentConfiguration()
         content.text = pfcItem.food.name
         content.secondaryText = pfcItem.description
@@ -58,7 +55,8 @@ class PFCTableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            dailyPfc.pfcItems.remove(at: indexPath.row)
+            DailyPFC.shared.pfcItems.remove(at: indexPath.row)
+            DailyPFC.saveDailyPFC()
             tableView.deleteRows(at: [indexPath], with: .automatic)
             updateTotalLabels()
         }
@@ -68,8 +66,9 @@ class PFCTableViewController: UITableViewController {
         guard segue.identifier == "savePFCItem" else { return }
         let sourceViewController = segue.source as! PFCItemDetailViewController
         if let pfcItem = sourceViewController.pfcItem {
-            let newIndexPath = IndexPath(row: dailyPfc.pfcItems.count, section: 0)
-            dailyPfc.pfcItems.append(pfcItem)
+            let newIndexPath = IndexPath(row: DailyPFC.shared.pfcItems.count, section: 0)
+            DailyPFC.shared.pfcItems.append(pfcItem)
+            DailyPFC.saveDailyPFC()
             tableView.insertRows(at: [newIndexPath], with: .automatic)
             updateTotalLabels()
         }
