@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct PFCItem: Codable {
+struct PFCItem: Codable, CustomStringConvertible {
     var food: Food
-    var amount: Int
+    var amount: Double
     
     var protein: Double {
         totalPFC(for: food.protein)
@@ -23,12 +23,19 @@ struct PFCItem: Codable {
         totalPFC(for: food.carbohydrate)
     }
     
+    var description: String {
+        let protein = String(format: "%.1f", protein)
+        let fat = String(format: "%.1f", fat)
+        let carbohydrate = String(format: "%.1f", carbohydrate)
+        return "P: \(protein)  F: \(fat)  C: \(carbohydrate)"
+    }
+    
     private func totalPFC(for nutrient: Double) -> Double {
         switch food.nutrientsPer {
         case .oneHundredGrams:
-            nutrient / 100 * Double(amount)
+            nutrient / 100 * amount
         case .serving:
-            nutrient * Double(amount)
+            nutrient * amount
         }
     }
 }
