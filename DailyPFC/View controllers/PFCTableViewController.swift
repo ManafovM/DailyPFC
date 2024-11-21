@@ -62,14 +62,33 @@ class PFCTableViewController: UITableViewController {
         }
     }
     
+    @IBSegueAction func editPfcItem(_ coder: NSCoder, sender: Any?) -> PFCItemDetailViewController? {
+        let pfcItemController = PFCItemDetailViewController(coder: coder)
+        
+        guard let cell = sender as? UITableViewCell,
+              let indexPath = tableView.indexPath(for: cell) else {
+            return pfcItemController
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        pfcItemController?.pfcItem = DailyPFC.shared.pfcItems[indexPath.row]
+        
+        return pfcItemController
+    }
+    
     @IBAction func unwindToPFCItems(segue: UIStoryboardSegue) {
         guard segue.identifier == "savePFCItem" else { return }
         let sourceViewController = segue.source as! PFCItemDetailViewController
         if let pfcItem = sourceViewController.pfcItem {
-            let newIndexPath = IndexPath(row: DailyPFC.shared.pfcItems.count, section: 0)
-            DailyPFC.shared.pfcItems.append(pfcItem)
+            if let indexOfExistingPfcItem = DailyPFC.shared.pfcItems.firstIndex(of: pfcItem) {
+                DailyPFC.shared.pfcItems[indexOfExistingPfcItem] = pfcItem
+                tableView.reloadRows(at: [IndexPath(row: indexOfExistingPfcItem, section: 0)], with: .automatic)
+            } else {
+                let newIndexPath = IndexPath(row: DailyPFC.shared.pfcItems.count, section: 0)
+                DailyPFC.shared.pfcItems.append(pfcItem)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
             DailyPFC.saveDailyPFC()
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
             updateTotalLabels()
         }
     }

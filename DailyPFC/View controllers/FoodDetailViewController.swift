@@ -19,7 +19,7 @@ class FoodDetailViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateNavigationItem()
+        updateUI()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -35,15 +35,25 @@ class FoodDetailViewController: UITableViewController {
         let nutrientsPer = NutrientsPer(rawValue: selectedSegmentTitle) ?? .oneHundredGrams
         
         if food != nil {
-            return
+            food?.name = name
+            food?.protein = protein
+            food?.fat = fat
+            food?.carbohydrate = carbohydrate
+            food?.nutrientsPer = nutrientsPer
         } else {
             food = Food(name: name, protein: protein, fat: fat, carbohydrate: carbohydrate, nutrientsPer: nutrientsPer)
         }
     }
     
-    func updateNavigationItem() {
+    func updateUI() {
         if let food {
             navigationItem.title = "Edit"
+            nameField.text = food.name
+            proteinField.text = "\(food.protein)"
+            fatField.text = "\(food.fat)"
+            carbohydrateField.text = "\(food.carbohydrate)"
+            nutrientsPerControl.selectedSegmentIndex = (0..<nutrientsPerControl.numberOfSegments)
+                .first(where: { nutrientsPerControl.titleForSegment(at: $0) == food.nutrientsPer.rawValue })!
         } else {
             navigationItem.title = "New"
         }

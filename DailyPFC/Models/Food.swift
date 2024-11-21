@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct Food: Codable, CustomStringConvertible, Equatable {
+struct Food: Identifiable, Codable, CustomStringConvertible, Equatable {
+    var id = UUID()
     var name: String
     var protein: Double
     var fat: Double
@@ -16,6 +17,10 @@ struct Food: Codable, CustomStringConvertible, Equatable {
     
     var description: String {
         "P: \(protein)  F: \(fat)  C: \(carbohydrate) per \(nutrientsPer.rawValue)"
+    }
+    
+    static func ==(lhs: Food, rhs: Food) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

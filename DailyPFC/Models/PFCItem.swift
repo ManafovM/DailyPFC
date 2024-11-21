@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct PFCItem: Codable, CustomStringConvertible {
+struct PFCItem: Identifiable, Codable, Equatable, CustomStringConvertible {
+    var id = UUID()
     var food: Food
     var amount: Double
     
@@ -37,5 +38,9 @@ struct PFCItem: Codable, CustomStringConvertible {
         case .serving:
             nutrient * amount
         }
+    }
+    
+    static func ==(lhs: PFCItem, rhs: PFCItem) -> Bool {
+        return lhs.id == rhs.id
     }
 }
