@@ -50,14 +50,33 @@ class FoodTableViewController: UITableViewController {
         }
     }
     
+    @IBSegueAction func editFood(_ coder: NSCoder, sender: Any?) -> FoodDetailViewController? {
+        let detailController = FoodDetailViewController(coder: coder)
+        
+        guard let cell = sender as? UITableViewCell,
+              let indexPath = tableView.indexPath(for: cell) else {
+            return detailController
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        detailController?.food = FoodList.shared.foodList[indexPath.row]
+        
+        return detailController
+    }
+    
     @IBAction func unwindToFoodList(segue: UIStoryboardSegue) {
         guard segue.identifier == "saveFood" else { return }
         let sourceViewController = segue.source as! FoodDetailViewController
         if let food = sourceViewController.food {
-            let newIndexPath = IndexPath(row: FoodList.shared.foodList.count, section: 0)
-            FoodList.shared.foodList.append(food)
+            if let indexOfExistingFood = FoodList.shared.foodList.firstIndex(of: food) {
+                FoodList.shared.foodList[indexOfExistingFood] = food
+                tableView.reloadRows(at: [IndexPath(row: indexOfExistingFood, section: 0)], with: .automatic)
+            } else {
+                let newIndexPath = IndexPath(row: FoodList.shared.foodList.count, section: 0)
+                FoodList.shared.foodList.append(food)
+                tableView.insertRows(at: [newIndexPath], with: .automatic)
+            }
             FoodList.saveFoodList()
-            tableView.insertRows(at: [newIndexPath], with: .automatic)
         }
     }
 }

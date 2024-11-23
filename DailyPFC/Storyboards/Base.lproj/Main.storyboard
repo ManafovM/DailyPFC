@@ -42,6 +42,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="fCa-0l-6na" kind="presentation" identifier="" id="LPx-lD-s3I"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -70,7 +73,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="ZF1-l0-990" kind="relationship" relationship="rootViewController" id="Ex1-pJ-MuT"/>
+                        <segue destination="ZF1-l0-990" kind="relationship" relationship="rootViewController" destinationCreationSelector="editFood:sender:" id="Ex1-pJ-MuT"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YYJ-qp-8RW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -196,6 +199,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="H4n-Ru-2M9" kind="presentation" id="LkY-X4-9tc"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -336,7 +342,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="YKp-1i-JOU" kind="relationship" relationship="rootViewController" id="d93-aC-cWY"/>
+                        <segue destination="YKp-1i-JOU" kind="relationship" relationship="rootViewController" destinationCreationSelector="editPfcItem:sender:" id="d93-aC-cWY"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BPp-9F-36Q" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -738,6 +744,10 @@
             <point key="canvasLocation" x="-144.27480916030532" y="-462.67605633802822"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="LkY-X4-9tc"/>
+        <segue reference="LPx-lD-s3I"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="circle" catalog="system" width="128" height="123"/>
         <image name="fork.knife.circle" catalog="system" width="128" height="123"/>

@@ -17,41 +17,37 @@ class PFCItemDetailViewController: UITableViewController, SelectFoodViewControll
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateNavigationItem()
-        updateFoodNameLabel()
+        updateUI()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         
-        guard segue.identifier == "savePFCItem" else { return }
+        guard segue.identifier == "savePFCItem",
+              let food else { return }
         let amount = Double(foodAmountField.text!) ?? 0
         
         if pfcItem != nil {
-            return
-        } else if let food {
+            pfcItem?.amount = amount
+            pfcItem?.food = food
+        } else {
             pfcItem = PFCItem(food: food, amount: amount)
         }
     }
     
     func selectFoodViewController(_ controller: SelectFoodViewController, didSelect food: Food) {
         self.food = food
-        updateFoodNameLabel()
+        foodNameLabel.text = food.name
     }
     
-    func updateFoodNameLabel() {
-        if let food {
-            foodNameLabel.text = food.name
-        } else {
-            foodNameLabel.text = "Not Set"
-        }
-    }
-    
-    func updateNavigationItem() {
+    func updateUI() {
         if let pfcItem {
             navigationItem.title = "Edit"
+            foodNameLabel.text = pfcItem.food.name
+            foodAmountField.text = "\(pfcItem.amount)"
         } else {
             navigationItem.title = "New"
+            foodNameLabel.text = "Not Set"
         }
     }
     
