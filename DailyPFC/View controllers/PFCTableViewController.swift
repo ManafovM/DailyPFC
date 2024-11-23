@@ -19,7 +19,7 @@ class PFCTableViewController: UITableViewController {
         
         navigationItem.leftBarButtonItem = editButtonItem
         tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedSectionHeaderHeight = 150.0
+        tableView.estimatedSectionHeaderHeight = 100.0
         
         DailyPFC.loadDailyPFC()
         updateTotalLabels()
@@ -28,9 +28,21 @@ class PFCTableViewController: UITableViewController {
     func updateTotalLabels() {
         currentKcal.text = "\(DailyPFC.shared.currentKcal)"
         maxKcal.text = "\(DailyPFC.shared.maxKcal)"
-        proteinTotalLabel.text = String(format: "%.1f", DailyPFC.shared.proteinTotal)
-        fatTotalLabel.text = String(format: "%.1f", DailyPFC.shared.fatTotal)
-        carbohydrateTotalLabel.text = String(format: "%.1f", DailyPFC.shared.carbohydrateTotal)
+        proteinTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.proteinTotal)
+        fatTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.fatTotal)
+        carbohydrateTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.carbohydrateTotal)
+    }
+    
+    func updateTotalLabelsWithAnimation() {
+        animateNumber(for: currentKcal, from: Double(currentKcal.text!)!, to: Double(DailyPFC.shared.currentKcal), duration: 0.5)
+        animateNumber(for: proteinTotalLabel, from: Double(proteinTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.proteinTotal, duration: 0.5)
+        animateNumber(for: fatTotalLabel, from: Double(fatTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.fatTotal, duration: 0.5)
+        animateNumber(for: carbohydrateTotalLabel, from: Double(carbohydrateTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.carbohydrateTotal, duration: 0.5)
+    }
+    
+    func animateNumber(for label: UILabel, from start: Double, to end: Double, duration: TimeInterval) {
+        let displayLink = CADisplayLink(target: NumberAnimator(from: start, to: end, duration: duration, label: label), selector: #selector(NumberAnimator.update))
+        displayLink.add(to: .main, forMode: .default)
     }
 
     // MARK: - Table view data source
@@ -65,7 +77,7 @@ class PFCTableViewController: UITableViewController {
             DailyPFC.shared.pfcItems.remove(at: indexPath.row)
             DailyPFC.saveDailyPFC()
             tableView.deleteRows(at: [indexPath], with: .automatic)
-            updateTotalLabels()
+            updateTotalLabelsWithAnimation()
         }
     }
     
@@ -96,7 +108,43 @@ class PFCTableViewController: UITableViewController {
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             DailyPFC.saveDailyPFC()
-            updateTotalLabels()
+            updateTotalLabelsWithAnimation()
         }
+    }
+}
+
+class NumberAnimator {
+    private let startValue: Double
+    private let endValue: Double
+    private let duration: TimeInterval
+    private let label: UILabel
+    private let startTime: CFTimeInterval
+    private var displayLink: CADisplayLink?
+    
+    init(from start: Double, to end: Double, duration: TimeInterval, label: UILabel) {
+        self.startValue = start
+        self.endValue = end
+        self.duration = duration
+        self.label = label
+        self.startTime = CACurrentMediaTime()
+    }
+    
+    @objc func update(displayLink: CADisplayLink) {
+        let elapsed = CACurrentMediaTime() - startTime
+        if elapsed >= duration {
+            label.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: endValue)
+            displayLink.invalidate()
+            return
+        }
+        let progress = elapsed / duration
+        let currentValue = Double(startValue + progress * endValue - startValue)
+        label.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: currentValue)
+    }
+    
+    static func stringForDoubleWithoutEndingZero(number: Double) -> String {
+        if floor(number) == number {
+            return String(format: "%.0f", number)
+        }
+        return String(format: "%.1f", number)
     }
 }
