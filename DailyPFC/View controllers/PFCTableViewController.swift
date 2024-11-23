@@ -9,7 +9,6 @@ import UIKit
 
 class PFCTableViewController: UITableViewController {
     @IBOutlet weak var currentKcal: UILabel!
-    @IBOutlet weak var maxKcal: UILabel!
     @IBOutlet weak var proteinTotalLabel: UILabel!
     @IBOutlet weak var fatTotalLabel: UILabel!
     @IBOutlet weak var carbohydrateTotalLabel: UILabel!
@@ -27,7 +26,6 @@ class PFCTableViewController: UITableViewController {
     
     func updateTotalLabels() {
         currentKcal.text = "\(DailyPFC.shared.currentKcal)"
-        maxKcal.text = "\(DailyPFC.shared.maxKcal)"
         proteinTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.proteinTotal)
         fatTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.fatTotal)
         carbohydrateTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.carbohydrateTotal)

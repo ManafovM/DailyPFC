@@ -17,7 +17,7 @@ class PFCItemDetailViewController: UITableViewController, SelectFoodViewControll
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateUI()
+        update()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -40,10 +40,11 @@ class PFCItemDetailViewController: UITableViewController, SelectFoodViewControll
         foodNameLabel.text = food.name
     }
     
-    func updateUI() {
+    func update() {
         if let pfcItem {
             navigationItem.title = "Edit"
-            foodNameLabel.text = pfcItem.food.name
+            food = pfcItem.food
+            foodNameLabel.text = food?.name
             foodAmountField.text = "\(pfcItem.amount)"
         } else {
             navigationItem.title = "New"
