@@ -8,6 +8,8 @@
 import UIKit
 
 class PFCTableViewController: UITableViewController {
+    @IBOutlet weak var currentKcal: UILabel!
+    @IBOutlet weak var maxKcal: UILabel!
     @IBOutlet weak var proteinTotalLabel: UILabel!
     @IBOutlet weak var fatTotalLabel: UILabel!
     @IBOutlet weak var carbohydrateTotalLabel: UILabel!
@@ -16,11 +18,16 @@ class PFCTableViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = editButtonItem
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 150.0
+        
         DailyPFC.loadDailyPFC()
         updateTotalLabels()
     }
     
     func updateTotalLabels() {
+        currentKcal.text = "\(DailyPFC.shared.currentKcal)"
+        maxKcal.text = "\(DailyPFC.shared.maxKcal)"
         proteinTotalLabel.text = String(format: "%.1f", DailyPFC.shared.proteinTotal)
         fatTotalLabel.text = String(format: "%.1f", DailyPFC.shared.fatTotal)
         carbohydrateTotalLabel.text = String(format: "%.1f", DailyPFC.shared.carbohydrateTotal)
