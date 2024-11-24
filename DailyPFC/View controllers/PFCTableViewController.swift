@@ -31,11 +31,11 @@ class PFCTableViewController: UITableViewController {
         carbohydrateTotalLabel.text = DailyPFC.shared.carbohydrateTotal.toString()
     }
     
-    func updateTotalLabelsWithAnimation() {
-        animateNumber(for: currentKcal, from: Double(currentKcal.text!) ?? 0, to: Double(DailyPFC.shared.currentKcal), duration: 0.5)
-        animateNumber(for: proteinTotalLabel, from: Double(proteinTotalLabel.text!) ?? 0, to: DailyPFC.shared.proteinTotal, duration: 0.5)
-        animateNumber(for: fatTotalLabel, from: Double(fatTotalLabel.text!) ?? 0, to: DailyPFC.shared.fatTotal, duration: 0.5)
-        animateNumber(for: carbohydrateTotalLabel, from: Double(carbohydrateTotalLabel.text!) ?? 0, to: DailyPFC.shared.carbohydrateTotal, duration: 0.5)
+    func updateTotalLabelsWithAnimation(duration: Double) {
+        animateNumber(for: currentKcal, from: Double(currentKcal.text!) ?? 0, to: Double(DailyPFC.shared.currentKcal), duration: duration)
+        animateNumber(for: proteinTotalLabel, from: Double(proteinTotalLabel.text!) ?? 0, to: DailyPFC.shared.proteinTotal, duration: duration)
+        animateNumber(for: fatTotalLabel, from: Double(fatTotalLabel.text!) ?? 0, to: DailyPFC.shared.fatTotal, duration: duration)
+        animateNumber(for: carbohydrateTotalLabel, from: Double(carbohydrateTotalLabel.text!) ?? 0, to: DailyPFC.shared.carbohydrateTotal, duration: duration)
     }
     
     func animateNumber(for label: UILabel, from start: Double, to end: Double, duration: TimeInterval) {
@@ -75,7 +75,7 @@ class PFCTableViewController: UITableViewController {
             DailyPFC.shared.pfcItems.remove(at: indexPath.row)
             DailyPFC.saveDailyPFC()
             tableView.deleteRows(at: [indexPath], with: .automatic)
-            updateTotalLabelsWithAnimation()
+            updateTotalLabelsWithAnimation(duration: 0.8)
         }
     }
     
@@ -106,7 +106,7 @@ class PFCTableViewController: UITableViewController {
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
             }
             DailyPFC.saveDailyPFC()
-            updateTotalLabelsWithAnimation()
+            updateTotalLabelsWithAnimation(duration: 0.8)
         }
     }
 }
@@ -135,7 +135,7 @@ class NumberAnimator {
             return
         }
         let progress = elapsed / duration
-        let currentValue = Double(startValue + progress * endValue - startValue)
+        let currentValue = Double(startValue + (endValue - startValue) * progress)
         label.text = currentValue.toString()
     }
 }
