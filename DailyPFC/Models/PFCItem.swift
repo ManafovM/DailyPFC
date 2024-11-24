@@ -25,10 +25,7 @@ struct PFCItem: Identifiable, Codable, Equatable, CustomStringConvertible {
     }
     
     var description: String {
-        let protein = String(format: "%.1f", protein)
-        let fat = String(format: "%.1f", fat)
-        let carbohydrate = String(format: "%.1f", carbohydrate)
-        return "P: \(protein)  F: \(fat)  C: \(carbohydrate)"
+        return "P: \(protein.toString())  F: \(fat.toString())  C: \(carbohydrate.toString())"
     }
     
     private func totalPFC(for nutrient: Double) -> Double {

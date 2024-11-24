@@ -26,16 +26,16 @@ class PFCTableViewController: UITableViewController {
     
     func updateTotalLabels() {
         currentKcal.text = "\(DailyPFC.shared.currentKcal)"
-        proteinTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.proteinTotal)
-        fatTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.fatTotal)
-        carbohydrateTotalLabel.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: DailyPFC.shared.carbohydrateTotal)
+        proteinTotalLabel.text = DailyPFC.shared.proteinTotal.toString()
+        fatTotalLabel.text = DailyPFC.shared.fatTotal.toString()
+        carbohydrateTotalLabel.text = DailyPFC.shared.carbohydrateTotal.toString()
     }
     
     func updateTotalLabelsWithAnimation() {
-        animateNumber(for: currentKcal, from: Double(currentKcal.text!)!, to: Double(DailyPFC.shared.currentKcal), duration: 0.5)
-        animateNumber(for: proteinTotalLabel, from: Double(proteinTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.proteinTotal, duration: 0.5)
-        animateNumber(for: fatTotalLabel, from: Double(fatTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.fatTotal, duration: 0.5)
-        animateNumber(for: carbohydrateTotalLabel, from: Double(carbohydrateTotalLabel.text!) ?? 0.0, to: DailyPFC.shared.carbohydrateTotal, duration: 0.5)
+        animateNumber(for: currentKcal, from: Double(currentKcal.text!) ?? 0, to: Double(DailyPFC.shared.currentKcal), duration: 0.5)
+        animateNumber(for: proteinTotalLabel, from: Double(proteinTotalLabel.text!) ?? 0, to: DailyPFC.shared.proteinTotal, duration: 0.5)
+        animateNumber(for: fatTotalLabel, from: Double(fatTotalLabel.text!) ?? 0, to: DailyPFC.shared.fatTotal, duration: 0.5)
+        animateNumber(for: carbohydrateTotalLabel, from: Double(carbohydrateTotalLabel.text!) ?? 0, to: DailyPFC.shared.carbohydrateTotal, duration: 0.5)
     }
     
     func animateNumber(for label: UILabel, from start: Double, to end: Double, duration: TimeInterval) {
@@ -130,19 +130,12 @@ class NumberAnimator {
     @objc func update(displayLink: CADisplayLink) {
         let elapsed = CACurrentMediaTime() - startTime
         if elapsed >= duration {
-            label.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: endValue)
+            label.text = endValue.toString()
             displayLink.invalidate()
             return
         }
         let progress = elapsed / duration
         let currentValue = Double(startValue + progress * endValue - startValue)
-        label.text = NumberAnimator.stringForDoubleWithoutEndingZero(number: currentValue)
-    }
-    
-    static func stringForDoubleWithoutEndingZero(number: Double) -> String {
-        if floor(number) == number {
-            return String(format: "%.0f", number)
-        }
-        return String(format: "%.1f", number)
+        label.text = currentValue.toString()
     }
 }

@@ -16,7 +16,7 @@ struct Food: Identifiable, Codable, CustomStringConvertible, Equatable {
     var nutrientsPer: NutrientsPer
     
     var description: String {
-        "P: \(protein)  F: \(fat)  C: \(carbohydrate) per \(nutrientsPer.rawValue)"
+        "P: \(protein.toString())  F: \(fat.toString())  C: \(carbohydrate.toString()) per \(nutrientsPer.rawValue)"
     }
     
     static func ==(lhs: Food, rhs: Food) -> Bool {
@@ -27,4 +27,25 @@ struct Food: Identifiable, Codable, CustomStringConvertible, Equatable {
 enum NutrientsPer: String, Codable {
     case oneHundredGrams = "100g"
     case serving = "serving"
+}
+
+extension Double {
+    func toString() -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+        formatter.maximumFractionDigits = 1
+        formatter.minimumFractionDigits = 0
+        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
+    }
+}
+
+extension String {
+    func toDouble() -> Double? {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        return formatter.number(from: self)?.doubleValue
+    }
 }
